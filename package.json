@@ -19,8 +19,8 @@
     "css-loader": "^3.2.0",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.12.0",
-    "react": "16.x",
-    "react-dom": "16.x",
+    "react": "^16.10.1",
+    "react-dom": "^16.10.1",
     "sass-loader": "8.x",
     "sn-components-api": "^1.2.7",
     "style-loader": "1.x",
@@ -28,5 +28,9 @@
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.8.1",
     "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "slate": "^0.47.8",
+    "slate-react": "^0.22.9"
   }
 }
