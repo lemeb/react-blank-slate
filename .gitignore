@@ -49,5 +49,6 @@ dist
 # Env configuration
 .env
 
-# Editor
+# Editors
 .idea
+.lvimrc
