@@ -1,6 +1,11 @@
-/* eslint semi: "off", quotes: "off", no-unused-vars: "off" */
-const logEnabled = false
-const log = (str) => { if ( logEnabled ) { console.log(str) } }
+const log = (...arg) => {
+  if (lEnab) {
+    console.log(...arg);
+  }
+};
+var lEnab = false;
+
+/* eslint max-lines-per-function: ["off"]*/
 
 class ComponentManager {
   constructor(permissions, onReady) {
@@ -20,14 +25,13 @@ class ComponentManager {
   }
 
   registerMessageHandler() {
-    let messageHandler = (event) => {
-
-      log("Components API Message received:", event.data)
+    let messageHandler = event => {
+      log("Components API Message received:", event.data);
 
       // The first message will be the most reliable one, so we won't change it
-      // after any subsequent events, in case you receive an event from 
+      // after any subsequent events, in case you receive an event from
       // another window.
-      if(!this.origin) {
+      if (!this.origin) {
         this.origin = event.origin;
       }
 
@@ -35,17 +39,17 @@ class ComponentManager {
       let data = event.data;
       let parsedData = typeof data === "string" ? JSON.parse(data) : data;
       this.handleMessage(parsedData);
-    }
+    };
 
     /*
-     * Mobile (React Native) uses `document`, web/desktop uses 
+     * Mobile (React Native) uses `document`, web/desktop uses
      * `window`.addEventListener for postMessage API to work properly.
      *
      * Update May 2019:
      * As part of transitioning React Native webview into the community package,
      * we'll now only need to use window.addEventListener.
      *
-     * However, we want to maintain backward compatibility for Mobile < v3.0.5, 
+     * However, we want to maintain backward compatibility for Mobile < v3.0.5,
      * so we'll keep document.addEventListener
      *
      * Also, even with the new version of react-native-webview, Android may
@@ -55,54 +59,59 @@ class ComponentManager {
      * See: https://git.io/Je4Xq
      */
 
-    document.addEventListener("message", function (event) {
-      messageHandler(event);
-    }, false);
+    document.addEventListener(
+      "message",
+      function(event) {
+        messageHandler(event);
+      },
+      false
+    );
 
-    window.addEventListener("message", function (event) {
-      messageHandler(event);
-    }, false);
+    window.addEventListener(
+      "message",
+      function(event) {
+        messageHandler(event);
+      },
+      false
+    );
   }
 
   handleMessage(payload) {
+    log("Message: ", payload);
 
-    log(payload)
-
-    if(payload.action === "component-registered") {
+    if (payload.action === "component-registered") {
       this.sessionKey = payload.sessionKey;
       this.componentData = payload.componentData;
 
       this.onReady(payload.data);
 
       log("Component successfully registered with payload:", payload);
-
-    } else if(payload.action === "themes") {
-      if(this.acceptsThemes) {
+    } else if (payload.action === "themes") {
+      if (this.acceptsThemes) {
         this.activateThemes(payload.data.themes);
       }
-    }
-
-    else if(payload.original) {
+    } else if (payload.original) {
       // get callback from queue
-      var originalMessage = this.sentMessages.filter(function(message){
+      var originalMessage = this.sentMessages.filter(function(message) {
         return message.messageId === payload.original.messageId;
       })[0];
 
+      log(
+        "Comparing Message ids:",
+        this.sentMessages.map(msg => { return msg.messageId; }),
+        payload.original.messageId
+      );
 
-      log(this.sentMessages)
-      log(this.sentMessages.map((msg) => {
-        return msg.messageId;
-      }), payload.original.messageId)
-
-
-      if(!originalMessage) {
+      if (!originalMessage) {
         // Connection must have been reset. Alert the user.
-        alert("This extension is attempting to communicate with "
-        + "Standard Notes, but an error is preventing it from doing so. " 
-        + "Please restart this extension and try again.")
+        alert(
+          "This extension is attempting to communicate with " +
+            "Standard Notes, but an error is preventing it from doing so. " +
+            "Please restart this extension and try again."
+        );
       }
 
-      if(originalMessage.callback) {
+      if (originalMessage.callback) {
         originalMessage.callback(payload.data);
       }
     }
@@ -114,11 +123,11 @@ class ComponentManager {
     this.uuid = data.uuid;
     this.isMobile = this.environment == "mobile";
 
-    if(this.initialPermissions && this.initialPermissions.length > 0) {
+    if (this.initialPermissions && this.initialPermissions.length > 0) {
       this.requestPermissions(this.initialPermissions);
     }
 
-    for(var message of this.messageQueue) {
+    for (var message of this.messageQueue) {
       this.postMessage(message.action, message.data, message.callback);
     }
 
@@ -128,7 +137,7 @@ class ComponentManager {
 
     this.activateThemes(data.activeThemeUrls || []);
 
-    if(this.onReadyCallback) {
+    if (this.onReadyCallback) {
       this.onReadyCallback();
     }
   }
@@ -145,8 +154,8 @@ class ComponentManager {
     this.componentData[key] = value;
     this.postMessage(
       "set-component-data",
-      {componentData: this.componentData},
-      function(data){}
+      { componentData: this.componentData },
+      function() {}
     );
   }
 
@@ -154,8 +163,8 @@ class ComponentManager {
     this.componentData = {};
     this.postMessage(
       "set-component-data",
-      {componentData: this.componentData},
-      function(data){}
+      { componentData: this.componentData },
+      function() {}
     );
   }
 
@@ -164,7 +173,7 @@ class ComponentManager {
   }
 
   postMessage(action, data, callback) {
-    if(!this.sessionKey) {
+    if (!this.sessionKey) {
       this.messageQueue.push({
         action: action,
         data: data,
@@ -179,14 +188,14 @@ class ComponentManager {
       messageId: this.generateUUID(),
       sessionKey: this.sessionKey,
       api: "component"
-    }
+    };
 
     var sentMessage = JSON.parse(JSON.stringify(message));
     sentMessage.callback = callback;
     this.sentMessages.push(sentMessage);
 
     // Mobile (React Native) requires a string for the postMessage API.
-    if(this.isMobile) {
+    if (this.isMobile) {
       message = JSON.stringify(message);
     }
 
@@ -196,28 +205,38 @@ class ComponentManager {
   }
 
   setSize(type, width, height) {
-    this.postMessage("set-size", {type: type, width: width, height: height},
-      function(data){}
+    this.postMessage(
+      "set-size",
+      { type: type, width: width, height: height },
+      function() {}
     );
   }
 
   requestPermissions(permissions, callback) {
-    this.postMessage("request-permissions", {permissions: permissions}, 
-      function(data){ callback && callback(); }.bind(this)
+    this.postMessage(
+      "request-permissions",
+      { permissions: permissions },
+      function() {
+        callback && callback();
+      }.bind(this)
     );
   }
 
   streamItems(contentTypes, callback) {
-    if(!Array.isArray(contentTypes)) {
+    if (!Array.isArray(contentTypes)) {
       contentTypes = [contentTypes];
     }
-    this.postMessage("stream-items", {content_types: contentTypes}, 
-      function(data){ callback(data.items); }.bind(this)
+    this.postMessage(
+      "stream-items",
+      { content_types: contentTypes },
+      function(data) {
+        callback(data.items);
+      }.bind(this)
     );
   }
 
   streamContextItem(callback) {
-    this.postMessage("stream-context-item", null, (data) => {
+    this.postMessage("stream-context-item", null, data => {
       let item = data.item;
       /*
         If this is a new context item than the context item the component was
@@ -227,9 +246,9 @@ class ComponentManager {
         context item, and when the debouncer executes to read the component UI,
         it will be reading the new UI for the previous item.
       */
-      let isNewItem = ( !this.lastStreamedItem 
-                        || this.lastStreamedItem.uuid !== item.uuid );
-      if(isNewItem && this.pendingSaveTimeout) {
+      let isNewItem =
+        !this.lastStreamedItem || this.lastStreamedItem.uuid !== item.uuid;
+      if (isNewItem && this.pendingSaveTimeout) {
         clearTimeout(this.pendingSaveTimeout);
         this._performSavingOfItems(this.pendingSaveParams);
         this.pendingSaveTimeout = null;
@@ -241,45 +260,55 @@ class ComponentManager {
   }
 
   selectItem(item) {
-    this.postMessage("select-item", {item: this.jsonObjectForItem(item)});
+    this.postMessage("select-item", { item: this.jsonObjectForItem(item) });
   }
 
   createItem(item, callback) {
-    this.postMessage("create-item", {item: this.jsonObjectForItem(item)}, 
-      function(data){
+    this.postMessage(
+      "create-item",
+      { item: this.jsonObjectForItem(item) },
+      function(data) {
         var item = data.item;
 
         // A previous version of the SN app had an issue where the item in the
         // reply to create-item would be nested inside "items" and not "item".
         // So handle both cases here.
 
-        if(!item && data.items && data.items.length > 0) { 
-          item = data.items[0]; 
+        if (!item && data.items && data.items.length > 0) {
+          item = data.items[0];
         }
 
-        this.associateItem(item); 
-        callback && callback(item); 
+        this.associateItem(item);
+        callback && callback(item);
       }.bind(this)
     );
   }
 
   createItems(items, callback) {
-    let mapped = items.map((item) => {return this.jsonObjectForItem(item)});
-    this.postMessage("create-items", {items: mapped}, function(data){
-      callback && callback(data.items);
-    }.bind(this));
+    let mapped = items.map(item => {
+      return this.jsonObjectForItem(item);
+    });
+    this.postMessage(
+      "create-items",
+      { items: mapped },
+      function(data) {
+        callback && callback(data.items);
+      }.bind(this)
+    );
   }
 
   associateItem(item) {
-    this.postMessage("associate-item", {item: this.jsonObjectForItem(item)});
+    this.postMessage("associate-item", { item: this.jsonObjectForItem(item) });
   }
 
   deassociateItem(item) {
-    this.postMessage("deassociate-item", {item: this.jsonObjectForItem(item)});
+    this.postMessage("deassociate-item", {
+      item: this.jsonObjectForItem(item)
+    });
   }
 
   clearSelection() {
-    this.postMessage("clear-selection", {content_type: "Tag"});
+    this.postMessage("clear-selection", { content_type: "Tag" });
   }
 
   deleteItem(item, callback) {
@@ -288,20 +317,26 @@ class ComponentManager {
 
   deleteItems(items, callback) {
     var params = {
-      items: items.map(function(item){
-        return this.jsonObjectForItem(item);
-      }.bind(this))
+      items: items.map(
+        function(item) {
+          return this.jsonObjectForItem(item);
+        }.bind(this)
+      )
     };
 
-    this.postMessage("delete-items", params, (data) => {
+    this.postMessage("delete-items", params, data => {
       callback && callback(data);
     });
   }
 
   sendCustomEvent(action, data, callback) {
-    this.postMessage(action, data, function(data){
-      callback && callback(data);
-    }.bind(this));
+    this.postMessage(
+      action,
+      data,
+      function(data) {
+        callback && callback(data);
+      }.bind(this)
+    );
   }
 
   saveItem(item, callback, skipDebouncer = false) {
@@ -323,17 +358,17 @@ class ComponentManager {
     this.saveItems(items, callback, false, presave);
   }
 
-  _performSavingOfItems({items, presave, callback}) {
+  _performSavingOfItems({ items, presave, callback }) {
     // presave block allows client to gain the benefit of performing something
     // in the debounce cycle.
     presave && presave();
 
     let mappedItems = [];
-    for(let item of items) {
+    for (let item of items) {
       mappedItems.push(this.jsonObjectForItem(item));
     }
 
-    this.postMessage("save-items", {items: mappedItems}, (data) => {
+    this.postMessage("save-items", { items: mappedItems }, () => {
       callback && callback();
     });
   }
@@ -341,25 +376,26 @@ class ComponentManager {
   /* skipDebouncer allows saves to go through right away rather than waiting
    * for timeout. This should be used when saving items via other means beside
    * keystrokes.
-  */
+   */
   saveItems(items, callback, skipDebouncer = false, presave) {
-
     // We need to make sure that when we clear a pending save timeout,
     // we carry over those pending items into the new save.
-    if(!this.pendingSaveItems) { this.pendingSaveItems = [];}
+    if (!this.pendingSaveItems) {
+      this.pendingSaveItems = [];
+    }
 
-    if(this.coallesedSaving == true && !skipDebouncer) {
-      if(this.pendingSaveTimeout) {
+    if (this.coallesedSaving == true && !skipDebouncer) {
+      if (this.pendingSaveTimeout) {
         clearTimeout(this.pendingSaveTimeout);
       }
 
-      let incomingIds = items.map((item) => item.uuid);
+      let incomingIds = items.map(item => item.uuid);
 
       // Replace any existing save items with incoming values
       // Only keep items here who are not in incomingIds
-      let preexistingItems = this.pendingSaveItems.filter((item) => {
+      let preexistingItems = this.pendingSaveItems.filter(item => {
         return !incomingIds.includes(item.uuid);
-      })
+      });
 
       // Add new items, now that we've made sure it's cleared
       // of incoming items.
@@ -371,7 +407,7 @@ class ComponentManager {
         items: this.pendingSaveItems,
         presave: presave,
         callback: callback
-      }
+      };
 
       this.pendingSaveTimeout = setTimeout(() => {
         this._performSavingOfItems(this.pendingSaveParams);
@@ -380,7 +416,7 @@ class ComponentManager {
         this.pendingSaveParams = null;
       }, this.coallesedSavingDelay);
     } else {
-      this._performSavingOfItems({items, presave, callback});
+      this._performSavingOfItems({ items, presave, callback });
     }
   }
 
@@ -394,7 +430,7 @@ class ComponentManager {
   getItemAppDataValue(item, key) {
     let AppDomain = "org.standardnotes.sn";
     var data = item.content.appData && item.content.appData[AppDomain];
-    if(data) {
+    if (data) {
       return data[key];
     } else {
       return null;
@@ -405,7 +441,7 @@ class ComponentManager {
 
   activateThemes(incomingUrls) {
     log("Incoming themes", incomingUrls);
-    if(this.activeThemes.sort().toString() == incomingUrls.sort().toString()) {
+    if (this.activeThemes.sort().toString() == incomingUrls.sort().toString()) {
       // incoming are same as active, do nothing
       return;
     }
@@ -413,29 +449,29 @@ class ComponentManager {
     let themesToActivate = incomingUrls || [];
     let themesToDeactivate = [];
 
-    for(var activeUrl of this.activeThemes) {
-      if(!incomingUrls.includes(activeUrl)) {
+    for (var activeUrl of this.activeThemes) {
+      if (!incomingUrls.includes(activeUrl)) {
         // active not present in incoming, deactivate it
         themesToDeactivate.push(activeUrl);
       } else {
         // already present in active themes, remove it from themesToActivate
-        themesToActivate = themesToActivate.filter((candidate) => {
+        themesToActivate = themesToActivate.filter(candidate => {
           return candidate != activeUrl;
-        })
+        });
       }
     }
 
     log("Deactivating themes:", themesToDeactivate);
     log("Activating themes:", themesToActivate);
 
-    for(var theme of themesToDeactivate) {
+    for (var theme of themesToDeactivate) {
       this.deactivateTheme(theme);
     }
 
     this.activeThemes = incomingUrls;
 
-    for(var url of themesToActivate) {
-      if(!url) {
+    for (var url of themesToActivate) {
+      if (!url) {
         continue;
       }
 
@@ -453,49 +489,48 @@ class ComponentManager {
   themeElementForUrl(url) {
     var cust_them = document.getElementsByClassName("custom-theme");
     var elements = Array.from(cust_them).slice();
-    return elements.find((element) => {
-      // We used to search here by `href`, but on desktop, 
+    return elements.find(element => {
+      // We used to search here by `href`, but on desktop,
       // with local file:// urls, that didn't work for some reason.
       return element.id == btoa(url);
-    })
+    });
   }
 
   deactivateTheme(url) {
     let element = this.themeElementForUrl(url);
-    if(element) {
+    if (element) {
       element.disabled = true;
       element.parentNode.removeChild(element);
     }
   }
 
-
   /* Utilities */
-
 
   generateUUID() {
     var crypto = window.crypto || window.msCrypto;
-    if(crypto) {
+    if (crypto) {
       var buf = new Uint32Array(4);
       crypto.getRandomValues(buf);
       var idx = -1;
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
-        function(c) {
-          idx++;
-          var r = (buf[idx>>3] >> ((idx%8)*4))&15;
-          var v = c == 'x' ? r : (r&0x3|0x8);
-          return v.toString(16);
-        }
-      );
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
+        c
+      ) {
+        idx++;
+        var r = (buf[idx >> 3] >> ((idx % 8) * 4)) & 15;
+        var v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
     } else {
       var d = new Date().getTime();
-      if(window.performance && typeof window.performance.now === "function"){
+      if (window.performance && typeof window.performance.now === "function") {
         d += performance.now(); //use high-precision timer if available
       }
-      var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
+      var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
         function(c) {
-          var r = (d + Math.random()*16)%16 | 0;
-          d = Math.floor(d/16);
-          return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+          var r = (d + Math.random() * 16) % 16 | 0;
+          d = Math.floor(d / 16);
+          return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
         }
       );
       return uuid;
@@ -503,11 +538,10 @@ class ComponentManager {
   }
 }
 
-
-if(typeof module != "undefined" && typeof module.exports != "undefined") {
+if (typeof module != "undefined" && typeof module.exports != "undefined") {
   module.exports = ComponentManager;
 }
 
-if(window) {
+if (window) {
   window.ComponentManager = ComponentManager;
 }
