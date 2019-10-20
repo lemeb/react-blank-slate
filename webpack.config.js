@@ -80,6 +80,6 @@ module.exports = {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new CopyWebpackPlugin([{ from: './app/index.html', to: 'index.html' }])
+    new CopyWebpackPlugin([{ from: 'index.html', to: 'index.html' }])
   ]
 }
