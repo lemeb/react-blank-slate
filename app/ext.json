@@ -1,6 +1,6 @@
 {
-    "identifier": "org.yourdomain.my-extension",
-    "name": "Blank Slate",
+    "identifier": "org.sn-tweakers.react-blank-slate",
+    "name": "React Blank Slate",
     "content_type": "SN|Component",
     "area": "editor-editor",
     "version": "1.1.0",
