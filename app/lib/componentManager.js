@@ -5,9 +5,9 @@ const log = (...arg) => {
 };
 var lEnab = false;
 
-/* eslint max-lines-per-function: ["off"]*/
+/* eslint max-lines-per-function: ["off"], max-lines: ["off"] */
 
-class ComponentManager {
+export default class ComponentManager {
   constructor(permissions, onReady) {
     this.sentMessages = [];
     this.messageQueue = [];
@@ -98,7 +98,9 @@ class ComponentManager {
 
       log(
         "Comparing Message ids:",
-        this.sentMessages.map(msg => { return msg.messageId; }),
+        this.sentMessages.map(msg => {
+          return msg.messageId;
+        }),
         payload.original.messageId
       );
 
@@ -228,7 +230,8 @@ class ComponentManager {
     }
     this.postMessage(
       "stream-items",
-      { content_types: contentTypes },
+      { content_types: contentTypes }, // eslint-disable-line camelcase
+
       function(data) {
         callback(data.items);
       }.bind(this)
@@ -308,6 +311,7 @@ class ComponentManager {
   }
 
   clearSelection() {
+    // eslint-disable-next-line camelcase
     this.postMessage("clear-selection", { content_type: "Tag" });
   }
 
@@ -487,8 +491,8 @@ class ComponentManager {
   }
 
   themeElementForUrl(url) {
-    var cust_them = document.getElementsByClassName("custom-theme");
-    var elements = Array.from(cust_them).slice();
+    var custThem = document.getElementsByClassName("custom-theme");
+    var elements = Array.from(custThem).slice();
     return elements.find(element => {
       // We used to search here by `href`, but on desktop,
       // with local file:// urls, that didn't work for some reason.
@@ -536,10 +540,6 @@ class ComponentManager {
       return uuid;
     }
   }
-}
-
-if (typeof module != "undefined" && typeof module.exports != "undefined") {
-  module.exports = ComponentManager;
 }
 
 if (window) {
