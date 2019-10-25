@@ -1,5 +1,5 @@
 import { Value } from "slate";
-import initialValueAsJson from "./value.json";
+import initialValueAsJson from "./value.js";
 
 export const log = (...arg) => {
   if (lEnab) {

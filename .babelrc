@@ -1,14 +1,24 @@
 {
   "presets": [
-    "@babel/env",
-    "@babel/react",
+    [
+      "@babel/preset-env", {
+        "modules": false,
+        "useBuiltIns": "entry", // or "entry"
+        "corejs": 3
+      }
+    ],
+    "@babel/preset-react"
   ],
 
   /* if you want to use babel runtime, uncomment the following line */
   // "plugins": ["transform-runtime"],
 
   "plugins": [
-    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-class-properties"
+  ],
+
+  "exclude": [
+    "./node_modules"
   ],
 
   "env": {
