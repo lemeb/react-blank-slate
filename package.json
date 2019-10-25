@@ -8,8 +8,8 @@
         "start": "webpack-dev-server --progress --hot --content-base app --config webpack.dev.js",
         "clean": "rm -rf .cache .tmp build dist",
         "rebuild": "npm run clean && npm run build",
-        "test": "mocha",
-        "coverage": "nyc npm run test"
+        "test": "nyc --reporter=lcov mocha",
+        "coverage": "codecov"
     },
     "dependencies": {
         "immutable": "^4.0.0-rc.12",
