@@ -1,12 +1,15 @@
 import React from "react";
-// import { Map, fromJS } from 'immutable'
-// import { Value } from 'slate'
 import Plain from "slate-plain-serializer";
 import { Editor } from "slate-react";
 import BridgeManager from "../lib/BridgeManager";
 import { initialValue, initialNote } from "../lib/utils";
 
-const log = (...arg) => { if (lEnab) { console.log(...arg) } }, lEnab = true
+const log = (...arg) => {
+    if (lEnab) {
+      console.log(...arg);
+    }
+  },
+  lEnab = true;
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -39,7 +42,7 @@ export default class Home extends React.Component {
    */
   handleEditFromSlate = change => {
     let str = this.slateToSN(change.value);
-    log(change.operations.map(op => op.type).toArray())
+    log(change.operations.map(op => op.type).toArray());
     if (str) {
       BridgeManager.get().saveNote(str);
       this.setState({ slateValue: change.value });
@@ -73,6 +76,7 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
+        <script type="text/javascript" src="slate.bundle.js"></script>
         <Editor
           value={this.state.slateValue}
           onChange={this.handleEditFromSlate}
