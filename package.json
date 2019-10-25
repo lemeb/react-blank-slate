@@ -8,8 +8,8 @@
         "start": "webpack-dev-server --progress --hot --content-base app --config webpack.dev.js",
         "clean": "rm -rf .cache .tmp build dist",
         "rebuild": "npm run clean && npm run build",
-        "test": "nyc --reporter=lcov mocha",
-        "coverage": "codecov"
+        "test": "nyc mocha",
+        "coverage": "nyc report --reporter=text-lcov | coveralls"
     },
     "dependencies": {
         "immutable": "^4.0.0-rc.12",
@@ -36,6 +36,7 @@
         "codecov": "^3.6.1",
         "copy-webpack-plugin": "^5.0.4",
         "core-js": "3",
+        "coveralls": "^3.0.7",
         "css-loader": "^3.2.0",
         "eslint": "^6.5.1",
         "eslint-plugin-react": "^7.16.0",
