@@ -9,7 +9,7 @@
         "clean": "rm -rf .cache .tmp build dist",
         "rebuild": "npm run clean && npm run build",
         "test": "nyc mocha",
-        "coverage": "nyc report --reporter=text-lcov | coveralls"
+        "coverage": "nyc report --reporter=text-lcov && cat ./coverage/lcov.info | coveralls"
     },
     "dependencies": {
         "immutable": "^4.0.0-rc.12",
