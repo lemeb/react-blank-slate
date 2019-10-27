@@ -67,7 +67,7 @@ module.exports = {
   },
   plugins: [
     // new MiniCssExtractPlugin({ filename: "./dist.css" }),
-    new CopyWebpackPlugin([{ from: "app/index.html", to: "index.html" }]),
+    new CopyWebpackPlugin([{ from: "app/index.html", to: "../index.html" }]),
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       "process.env": {
