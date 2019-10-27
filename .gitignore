@@ -50,3 +50,6 @@ build
 .idea
 .lvimrc
 CS_SESSION
+
+# Secrets
+*.secret
