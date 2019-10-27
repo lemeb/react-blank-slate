@@ -6,5 +6,6 @@
     "version": "2.0.0-alpha",
     "url": "https://lemeb.github.io/react-blank-slate/",
     "download_url": "https://github.com/lemeb/react-blank-slate/archive/gh-pages.zip",
-    "latest_url": "https://raw.githubusercontent.com/lemeb/react-blank-slate/gh-pages/app/ext.json"
+    "latest_url": "https://raw.githubusercontent.com/lemeb/react-blank-slate/gh-pages/app/ext.json",
+    "marketing_url": "https://github.com/lemeb/react-blank-slate"
 }
