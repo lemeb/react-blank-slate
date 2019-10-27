@@ -14,7 +14,6 @@ module.exports = merge.smart(common, {
         "X-Requested-With, content-type, Authorization"
     },
     contentBase: "./dist",
-    hot:         true,
-    writeToDisk: true
+    hot:         true
   }
 });
