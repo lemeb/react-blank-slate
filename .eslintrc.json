@@ -2,64 +2,36 @@
   "env": {
     "browser": true,
     "es6": true,
-    "node": true,
-    "mocha": true
+    "node": true
   },
-  "extends": [ 
-    "eslint:recommended",
-    "plugin:react/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
   },
   "parser": "babel-eslint",
   "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
+    "ecmaFeatures": { "jsx": true },
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": [
-    "react"
-  ],
+  "plugins": ["react"],
   "rules": {
-    "indent": [
-      "error",
-      2
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
-    "max-lines-per-function": [
+    "key-spacing": [
       "error", {
-        "max": 20
+        "multiLine": { "beforeColon": false, "afterColon":true },
+        "align":     { "on": "value", "afterColon": true }
       }
     ],
-    "max-lines": [
-      "error", {
-        "max": 300
-      }
-    ],
-    "camelcase": [
-      "error", {
-        "properties": "always"
-      }
-    ],
-    "no-trailing-spaces": [
-      "error"
-    ],
-    "no-unused-vars": [
-      "error", {
-        "args": "after-used"
-      }
-    ]
+    "indent":                   ["error", 2],
+    "linebreak-style":          ["error", "unix"],
+    "max-lines-per-function":   ["error", { "max": 20 }],
+    "max-lines":                ["error", { "max": 300 }],
+    "camelcase":                ["error", { "properties": "always" }],
+    "no-trailing-spaces":       ["error"],
+    "no-unused-vars":           ["error", { "args": "after-used" }]
   },
   "settings": {
-    "react": {
-      "version": "detect"
-    }
+    "react": { "version": "detect" }
   }
 }

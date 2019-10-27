@@ -177,19 +177,19 @@ export default class ComponentManager {
   postMessage(action, data, callback) {
     if (!this.sessionKey) {
       this.messageQueue.push({
-        action: action,
-        data: data,
+        action:   action,
+        data:     data,
         callback: callback
       });
       return;
     }
 
     var message = {
-      action: action,
-      data: data,
-      messageId: this.generateUUID(),
+      action:     action,
+      data:       data,
+      messageId:  this.generateUUID(),
       sessionKey: this.sessionKey,
-      api: "component"
+      api:        "component"
     };
 
     var sentMessage = JSON.parse(JSON.stringify(message));
@@ -408,8 +408,8 @@ export default class ComponentManager {
       // We'll potentially need to commit early if
       // stream-context-item message comes in
       this.pendingSaveParams = {
-        items: this.pendingSaveItems,
-        presave: presave,
+        items:    this.pendingSaveItems,
+        presave:  presave,
         callback: callback
       };
 

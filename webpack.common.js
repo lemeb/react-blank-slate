@@ -12,21 +12,21 @@ module.exports = {
     ]
   },
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path:       path.resolve(__dirname, "dist"),
     publicPath: "/",
-    filename: "./[name].bundle.js"
+    filename:   "./[name].bundle.js"
   },
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test:    /\.css$/,
         include: path.resolve(__dirname, "app"),
-        loader: "style-loader!css-loader"
+        loader:  "style-loader!css-loader"
       },
       {
-        test: /\.scss$/,
+        test:    /\.scss$/,
         exclude: /node_modules/,
-        use: [
+        use:     [
           // Replaces ExtractTextPlugin, which is deprecated
           "style-loader",
           "css-loader",
@@ -35,13 +35,13 @@ module.exports = {
       },
       {
         test: /\.bundle\.js$/,
-        use: "bundle-loader"
+        use:  "bundle-loader"
       },
       {
-        test: /\.js[x]?$/,
+        test:    /\.js[x]?$/,
         include: [path.resolve(__dirname, "app")],
         exclude: /node_modules/,
-        loader: "babel-loader"
+        loader:  "babel-loader"
       }
     ]
   },
@@ -49,17 +49,17 @@ module.exports = {
     extensions: [".js", ".jsx"]
   },
   optimization: {
-    minimize: true, // Replaces uglifyJsPlugin
+    minimize:    true, // Replaces uglifyJsPlugin
     splitChunks: {
       cacheGroups: {
         slate: {
-          test: /[\\/]node_modules[\\/]slate.*[\\/]/,
-          name: "slate",
+          test:   /[\\/]node_modules[\\/]slate.*[\\/]/,
+          name:   "slate",
           chunks: "all"
         },
         react: {
-          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-          name: "react",
+          test:   /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          name:   "react",
           chunks: "all"
         }
       }
