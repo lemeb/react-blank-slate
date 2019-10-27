@@ -53,3 +53,4 @@ CS_SESSION
 
 # Secrets
 *.secret
+.ext-dev.json

@@ -1,15 +1,15 @@
 export default {
-  object: "value",
+  object:   "value",
   document: {
     object: "document",
-    nodes: [
+    nodes:  [
       {
         object: "block",
-        type: "line",
-        nodes: [
+        type:   "line",
+        nodes:  [
           {
             object: "text",
-            text: "The text is loading from Standard Notes..."
+            text:   "The text is loading from Standard Notes..."
           }
         ]
       }
